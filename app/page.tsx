@@ -26,6 +26,7 @@ interface Oneri {
   baslik?: string
   icerik?: string
   kullanici_adi?: string
+  onayli?: boolean
   created_at?: string
 }
 
@@ -72,10 +73,10 @@ export default function Home() {
     verileriGetir()
   }, [])
 
-  // Admin Giriş İşlemi (Şifre: iggp2026)
+  // Admin Giriş İşlemi (GÜNCELLENEN ŞİFRE: iggpMT2634)
   const handleAdminGiris = (e: React.FormEvent) => {
     e.preventDefault()
-    if (sifreInput === 'iggp2026') {
+    if (sifreInput === 'iggpMT2634') {
       setIsAdminLoggedIn(true)
       setSifreHata(false)
       setSifreInput('')
@@ -150,19 +151,33 @@ export default function Home() {
   const handleOneriGonder = async (e: React.FormEvent) => {
     e.preventDefault()
     setFormMesaj('Gönderiliyor...')
-    const { error } = await supabase.from('oneriler').insert([oneriForm])
+    const { error } = await supabase.from('oneriler').insert([{ ...oneriForm, onayli: false }])
     if (error) setFormMesaj('Hata oluştu: ' + error.message)
     else {
-      setFormMesaj('Fikriniz katılım kürsüsüne iletildi!')
+      setFormMesaj('Fikriniz yönetime iletildi! Onaylandıktan sonra kürsüde görünecektir.')
       setOneriForm({ baslik: '', icerik: '', kullanici_adi: '' })
       verileriGetir()
     }
   }
 
+  // Admin Onay / Sil İşlemleri
+  const handleOneriOnayla = async (id: number) => {
+    await supabase.from('oneriler').update({ onayli: true }).eq('id', id)
+    verileriGetir()
+  }
+
+  const handleOneriSil = async (id: number) => {
+    if (!confirm('Bu fikri silmek istediğinize emin misiniz?')) return
+    await supabase.from('oneriler').delete().eq('id', id)
+    verileriGetir()
+  }
+
+  const onayliOneriler = oneriler.filter((o) => o.onayli)
+
   return (
     <div className="min-h-screen bg-[#05110d] text-slate-100 font-sans flex flex-col justify-between selection:bg-amber-400 selection:text-slate-950">
       
-      {/* 🟢 ÜST DUYURU & SOSYAL MEDYA BAR (Altın Sarısı & Zümrüt Vurgulu) */}
+      {/* 🟢 ÜST DUYURU & SOSYAL MEDYA BAR */}
       <div className="bg-gradient-to-r from-[#030a08] via-[#091a13] to-[#030a08] text-xs py-2 px-4 border-b border-amber-500/30 text-amber-100/90">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
           <span className="flex items-center gap-2">
@@ -187,17 +202,13 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-[#061611]/95 backdrop-blur-md border-b border-amber-500/20 shadow-2xl">
         <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-col lg:flex-row justify-between items-center gap-4">
           
-          {/* OLUŞTURULAN LOGO AMBLEMİ */}
           <div className="flex items-center gap-3.5 cursor-pointer group" onClick={() => setActiveTab('anasayfa')}>
             <div className="relative w-12 h-12 rounded-full border-2 border-amber-400/80 p-0.5 shadow-lg shadow-amber-500/10 group-hover:scale-105 group-hover:border-amber-300 transition duration-300 overflow-hidden bg-[#030a08]">
               <img 
                 src="/logo.png" 
                 alt="İGGP Amblem" 
                 className="w-full h-full object-cover rounded-full"
-                onError={(e) => {
-                  // Görsel henüz yüklenmediyse şık bir yedek amblem gösterir
-                  e.currentTarget.style.display = 'none';
-                }}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
             </div>
             <div>
@@ -209,7 +220,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* MENÜ LİNKLERİ */}
           <nav className="flex items-center gap-1 md:gap-2 text-xs md:text-sm font-semibold flex-wrap justify-center">
             <button
               onClick={() => setActiveTab('anasayfa')}
@@ -227,7 +237,7 @@ export default function Home() {
               onClick={() => setActiveTab('katilim')}
               className={`px-3 py-2 rounded-xl transition ${activeTab === 'katilim' ? 'bg-amber-400/10 text-amber-400 border border-amber-400/40' : 'text-slate-300 hover:text-amber-300'}`}
             >
-              Katılım Kürsüsü ({oneriler.length})
+              Katılım Kürsüsü ({onayliOneriler.length})
             </button>
             <button
               onClick={() => setActiveTab('tuzuk')}
@@ -261,10 +271,7 @@ export default function Home() {
         {/* 1. ANASAYFA */}
         {activeTab === 'anasayfa' && (
           <div className="space-y-12">
-            {/* HERO BANNER - LOGO ORTADA BUYUK VURGUYLA */}
             <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#081e18] via-[#051410] to-[#030a08] border border-amber-500/30 p-8 md:p-12 text-center space-y-6 shadow-2xl">
-              
-              {/* ORTA BÖLÜM LOGO SERGİSİ */}
               <div className="mx-auto w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-amber-400/80 p-1 bg-[#030a08] shadow-2xl shadow-amber-500/20 flex items-center justify-center relative group">
                 <img 
                   src="/logo.png" 
@@ -275,7 +282,7 @@ export default function Home() {
               </div>
 
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-bold">
-                ✨ Geleceğin Siyareti Başlıyor
+                ✨ Geleceğin Siyaseti Başlıyor
               </div>
 
               <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
@@ -288,7 +295,6 @@ export default function Home() {
                 İGGP; adalet ve ahlakı merkeze alan, yerli ve milli teknolojik hamleleri destekleyen, genç fikirlerle Türkiye'nin yarınlarını inşa etmeyi hedefleyen yeni nesil bir siyasi harekettir.
               </p>
               
-              {/* SOSYAL MEDYA BUTONLARI */}
               <div className="flex flex-wrap justify-center gap-3 pt-2">
                 <a href="https://www.tiktok.com/@iggpresmi" target="_blank" rel="noreferrer" className="px-5 py-2.5 rounded-xl bg-[#091a13] hover:bg-[#0e271d] text-amber-300 border border-amber-500/30 text-xs font-bold transition flex items-center gap-2">
                   🎵 TikTok (@iggpresmi)
@@ -302,7 +308,6 @@ export default function Home() {
               </div>
             </section>
 
-            {/* HABERLER VE DUYURULAR */}
             <section className="space-y-6">
               <div className="flex justify-between items-center border-b border-emerald-900/80 pb-4">
                 <h2 className="text-2xl font-black text-amber-400 flex items-center gap-2">
@@ -365,7 +370,7 @@ export default function Home() {
           <div className="space-y-8 max-w-3xl mx-auto">
             <div className="bg-[#081813]/90 border border-amber-500/30 p-6 md:p-8 rounded-3xl space-y-4 shadow-xl">
               <h2 className="text-2xl font-black text-amber-400">💡 Fikrini ve Önerini Paylaş</h2>
-              <p className="text-xs text-slate-300">Parti yönetimimize iletmek istediğiniz fikir, proje ve önerileri doğrudan buradan gönderebilirsiniz.</p>
+              <p className="text-xs text-slate-300">Parti yönetimimize iletmek istediğiniz fikir, proje ve önerileri doğrudan buradan gönderin.</p>
 
               {formMesaj && <p className="text-xs font-semibold text-amber-300 p-3 bg-amber-400/10 rounded-xl border border-amber-400/30">{formMesaj}</p>}
 
@@ -400,14 +405,18 @@ export default function Home() {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-bold text-white">Paylaşılan Fikirler</h3>
-              {oneriler.map((o) => (
-                <div key={o.id} className="bg-[#081813]/50 border border-emerald-900/60 p-4 rounded-xl space-y-1">
-                  <h4 className="font-bold text-amber-300 text-sm">{o.baslik}</h4>
-                  <p className="text-xs text-slate-300">{o.icerik}</p>
-                  {o.kullanici_adi && <p className="text-[10px] text-amber-400 font-medium">— {o.kullanici_adi}</p>}
-                </div>
-              ))}
+              <h3 className="text-lg font-bold text-white">Yayınlanan Fikirler ({onayliOneriler.length})</h3>
+              {onayliOneriler.length === 0 ? (
+                <p className="text-xs text-slate-400 italic">Henüz yayınlanmış bir fikir bulunmuyor.</p>
+              ) : (
+                onayliOneriler.map((o) => (
+                  <div key={o.id} className="bg-[#081813]/50 border border-emerald-900/60 p-4 rounded-xl space-y-1">
+                    <h4 className="font-bold text-amber-300 text-sm">{o.baslik}</h4>
+                    <p className="text-xs text-slate-300">{o.icerik}</p>
+                    {o.kullanici_adi && <p className="text-[10px] text-amber-400 font-medium">— {o.kullanici_adi}</p>}
+                  </div>
+                ))
+              )}
             </div>
           </div>
         )}
@@ -465,11 +474,10 @@ export default function Home() {
           </div>
         )}
 
-        {/* 6. ADMIN PANELİ (KORUMALI & ŞİFRELİ) */}
+        {/* 6. ADMIN PANELİ */}
         {activeTab === 'admin' && (
           <div className="max-w-4xl mx-auto space-y-6">
             {!isAdminLoggedIn ? (
-              /* ADMIN ŞİFRE GİRİŞ EKRANI */
               <div className="max-w-sm mx-auto bg-[#081813]/90 border border-amber-500/30 p-8 rounded-3xl text-center space-y-4 shadow-2xl">
                 <div className="w-12 h-12 bg-amber-400/10 text-amber-400 border border-amber-400/30 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">
                   🔒
@@ -498,7 +506,6 @@ export default function Home() {
                 </form>
               </div>
             ) : (
-              /* ADMIN PANELİ İÇERİĞİ */
               <div className="space-y-6">
                 <div className="flex justify-between items-center bg-[#081813] p-4 rounded-2xl border border-emerald-900">
                   <span className="text-xs text-amber-400 font-bold">✅ Admin Oturumu Açık</span>
@@ -524,13 +531,12 @@ export default function Home() {
                     onClick={() => setAdminTab('oneriler')}
                     className={`py-2 px-4 text-xs font-bold rounded-t-xl transition ${adminTab === 'oneriler' ? 'bg-[#081813] text-amber-400 border-t border-x border-emerald-900' : 'text-slate-400'}`}
                   >
-                    💡 Fikirler ({oneriler.length})
+                    💡 Fikirler Yönetimi ({oneriler.length})
                   </button>
                 </div>
 
                 {adminTab === 'haberler' && (
                   <div className="space-y-6">
-                    {/* HABER FORM */}
                     <div className="bg-[#081813]/90 border border-emerald-900 p-6 rounded-2xl space-y-4">
                       <div className="flex justify-between items-center border-b border-emerald-900 pb-3">
                         <h3 className="font-bold text-amber-400">
@@ -582,7 +588,6 @@ export default function Home() {
                       </form>
                     </div>
 
-                    {/* HABER LİSTESİ */}
                     <div className="bg-[#081813]/90 border border-emerald-900 p-6 rounded-2xl space-y-3">
                       <h3 className="font-bold text-white text-sm">Mevcut Haberler</h3>
                       {haberler.map((h) => (
@@ -622,12 +627,33 @@ export default function Home() {
 
                 {adminTab === 'oneriler' && (
                   <div className="bg-[#081813]/90 border border-emerald-900 p-6 rounded-2xl space-y-3">
-                    <h3 className="font-bold text-white text-sm">Gelen Fikirler</h3>
+                    <h3 className="font-bold text-white text-sm">Gelen Fikirler & Onay Mantığı</h3>
                     {oneriler.map((o) => (
-                      <div key={o.id} className="p-3 bg-[#030a08] rounded-xl border border-emerald-900 text-xs space-y-1">
-                        <p className="font-bold text-amber-300">{o.baslik}</p>
-                        <p className="text-slate-300">{o.icerik}</p>
-                        {o.kullanici_adi && <p className="text-amber-400">— {o.kullanici_adi}</p>}
+                      <div key={o.id} className="p-3 bg-[#030a08] rounded-xl border border-emerald-900 text-xs flex justify-between items-center">
+                        <div className="space-y-1 pr-4">
+                          <div className="flex items-center gap-2">
+                            <p className="font-bold text-amber-300">{o.baslik}</p>
+                            {o.onayli ? (
+                              <span className="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded">Yayınlandı</span>
+                            ) : (
+                              <span className="text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded">Onay Bekliyor</span>
+                            )}
+                          </div>
+                          <p className="text-slate-300">{o.icerik}</p>
+                          {o.kullanici_adi && <p className="text-amber-400">— {o.kullanici_adi}</p>}
+                        </div>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {!o.onayli && o.id && (
+                            <button onClick={() => handleOneriOnayla(o.id!)} className="px-3 py-1 bg-emerald-600 text-white rounded-lg font-bold">
+                              Onayla ✅
+                            </button>
+                          )}
+                          {o.id && (
+                            <button onClick={() => handleOneriSil(o.id!)} className="px-3 py-1 bg-red-500/20 text-red-400 rounded-lg">
+                              Sil 🗑️
+                            </button>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -638,26 +664,10 @@ export default function Home() {
         )}
       </main>
 
-      {/* 🔻 ALT BİLGİ (FOOTER) */}
-      <footer className="border-t border-amber-500/20 bg-[#030a08] py-8 text-xs text-slate-400">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full border border-amber-400/60 overflow-hidden bg-[#030a08]">
-              <img src="/logo.png" alt="İGGP" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-            </div>
-            <div>
-              <p className="font-bold text-amber-400">İGGP - İslami Gelişme ve Girişim Partisi</p>
-              <p className="text-[11px] text-slate-500">© 2026 Tüm Hakları Saklıdır. Ahlak, Adalet ve Teknoloji Hareketi.</p>
-            </div>
-          </div>
-          <div className="flex gap-4 font-semibold text-[11px]">
-            <a href="https://www.tiktok.com/@iggpresmi" target="_blank" rel="noreferrer" className="hover:text-amber-400 transition">TikTok</a>
-            <a href="https://x.com/iggp272663" target="_blank" rel="noreferrer" className="hover:text-amber-400 transition">Twitter / X</a>
-            <a href="https://www.instagram.com/iggp_tr" target="_blank" rel="noreferrer" className="hover:text-amber-400 transition">Instagram</a>
-          </div>
-        </div>
+      {/* 🔻 FOOTER */}
+      <footer className="border-t border-amber-500/20 bg-[#030a08] py-6 text-center text-xs text-slate-400">
+        <p>© 2026 İGGP - İslami Gelişme ve Girişim Partisi. Tüm Hakları Saklıdır.</p>
       </footer>
-
     </div>
   )
 }
