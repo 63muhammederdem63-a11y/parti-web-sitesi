@@ -170,11 +170,15 @@ export default function Home() {
             <strong>İGGP Dijital Vizyonu:</strong> Ahlak, Adalet ve Teknolojik Kalkınma İle Yarınlara.
           </span>
           <div className="flex items-center gap-4 font-medium text-[11px]">
-            <a href="https://whatsapp.com" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline flex items-center gap-1">
-              💬 WhatsApp Topluluğumuz
+            <a href="https://www.tiktok.com/@iggpresmi" target="_blank" rel="noreferrer" className="hover:text-emerald-300 transition flex items-center gap-1">
+              🎵 TikTok
             </a>
-            <a href="https://x.com" target="_blank" rel="noreferrer" className="hover:text-emerald-300 transition">𝕏 Twitter</a>
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-emerald-300 transition">📸 Instagram</a>
+            <a href="https://x.com/iggp272663" target="_blank" rel="noreferrer" className="hover:text-emerald-300 transition flex items-center gap-1">
+              𝕏 Twitter
+            </a>
+            <a href="https://www.instagram.com/iggp_tr" target="_blank" rel="noreferrer" className="hover:text-emerald-300 transition flex items-center gap-1">
+              📸 Instagram
+            </a>
           </div>
         </div>
       </div>
@@ -253,7 +257,7 @@ export default function Home() {
             {/* HERO BANNER */}
             <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-slate-900 via-[#0d1627] to-[#070b14] border border-slate-800 p-8 md:p-14 text-center space-y-6 shadow-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
-                ✨ Geleceğin Siyaseti Başlıyor
+                ✨ Geleceğin Siyareti Başlıyor
               </div>
               <h1 className="text-3xl md:text-6xl font-black tracking-tight text-white leading-tight">
                 Ahlak, Adalet ve <br />
@@ -264,12 +268,17 @@ export default function Home() {
               <p className="text-slate-300 max-w-3xl mx-auto text-sm md:text-base leading-relaxed">
                 İGGP; adalet ve ahlakı merkeze alan, yerli ve milli teknolojik hamleleri destekleyen, genç fikirlerle Türkiye'nin yarınlarını inşa etmeyi hedefleyen yeni nesil bir siyasi harekettir.
               </p>
-              <div className="flex flex-wrap justify-center gap-4 pt-2">
-                <button onClick={() => setActiveTab('katil')} className="px-6 py-3 rounded-xl bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 transition">
-                  Gönüllü Ol & Katıl
-                </button>
-                <a href="https://whatsapp.com" target="_blank" rel="noreferrer" className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 font-bold transition flex items-center gap-2">
-                  💬 WhatsApp Grubuna Gel
+              
+              {/* SOSYAL MEDYA DIŞ BAĞLANTILARI */}
+              <div className="flex flex-wrap justify-center gap-3 pt-2">
+                <a href="https://www.tiktok.com/@iggpresmi" target="_blank" rel="noreferrer" className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 text-xs font-bold transition flex items-center gap-2">
+                  🎵 TikTok (@iggpresmi)
+                </a>
+                <a href="https://x.com/iggp272663" target="_blank" rel="noreferrer" className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 text-xs font-bold transition flex items-center gap-2">
+                  𝕏 Twitter (@iggp272663)
+                </a>
+                <a href="https://www.instagram.com/iggp_tr" target="_blank" rel="noreferrer" className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 text-xs font-bold transition flex items-center gap-2">
+                  📸 Instagram (@iggp_tr)
                 </a>
               </div>
             </section>
@@ -617,10 +626,10 @@ export default function Home() {
             <p className="font-bold text-white">İGGP - İslami Gelişme ve Girişim Partisi</p>
             <p className="text-[11px] text-slate-500 mt-1">© 2026 Tüm Hakları Saklıdır. Ahlak, Adalet ve Teknoloji Hareketi.</p>
           </div>
-          <div className="flex gap-4">
-            <a href="https://whatsapp.com" target="_blank" rel="noreferrer" className="hover:text-emerald-400 transition">WhatsApp</a>
-            <a href="https://x.com" target="_blank" rel="noreferrer" className="hover:text-emerald-400 transition">Twitter</a>
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-emerald-400 transition">Instagram</a>
+          <div className="flex gap-4 font-semibold text-[11px]">
+            <a href="https://www.tiktok.com/@iggpresmi" target="_blank" rel="noreferrer" className="hover:text-emerald-400 transition">TikTok</a>
+            <a href="https://x.com/iggp272663" target="_blank" rel="noreferrer" className="hover:text-emerald-400 transition">Twitter / X</a>
+            <a href="https://www.instagram.com/iggp_tr" target="_blank" rel="noreferrer" className="hover:text-emerald-400 transition">Instagram</a>
           </div>
         </div>
       </footer>
